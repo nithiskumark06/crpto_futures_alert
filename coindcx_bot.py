@@ -300,9 +300,17 @@ async def main():
             print(f"❌ Error: {e}")
     
 if __name__ == "__main__":
-    for symbol in COINS:
-        analysis = analyze_symbol(symbol)
-        if analysis['strong_bull'] or analysis['strong_bear']:
-            message = format_telegram_message(analysis)
-            asyncio.run(send_telegram_message(message))  
-        print(f"📊 {symbol}: {analysis}")
+    print("🚀 Railway Pro Scalping Bot Started")
+
+    while True:
+        for coin in COINS:
+            analysis = analyze_symbol(coin)
+
+            if analysis and (analysis["strong_bull"] or analysis["strong_bear"]):
+                msg = format_message(analysis)
+                send_telegram_message(msg)
+
+            print(f"📊 {coin} scanned")
+
+        time.sleep(300)  # 5 minutes
+
