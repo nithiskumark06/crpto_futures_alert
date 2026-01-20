@@ -233,7 +233,18 @@ def analyze_symbol(symbol):
             'strong_bear': bear_score >= 3 and market_regime != "CHOP"
         }
     except:
-        return None
+        return {
+        'symbol': symbol,
+        'price': None,
+        'regime': 'ERROR',
+        'bull_score': 0,
+        'bear_score': 0,
+        'stop_loss': None,
+        'profit_target': None,
+        'rr_ratio': 0,
+        'vol_strength': 0,
+        'strong_bull': False,
+        'strong_bear': False}
 
 async def send_telegram_message(message):
    try:
@@ -290,7 +301,11 @@ async def main():
 if __name__ == "__main__":
     for symbol in COINS:
         analysis = analyze_symbol(symbol)
-        if analysis['strong_bull'] or analysis['strong_bear']:
+        if not analysis:
+            print(f"⚠ Skipping {symbol}: analysis failed")
+            continue
+        
+        if analysis.get('strong_bull') or analysis.get('strong_bear'):
             message = format_telegram_message(analysis)
             asyncio.run(send_telegram_message(message))  # Single message
-        print(f"📊 {symbol}: {analysis}")
+            print(f"📊 {symbol}: {analysis}")
