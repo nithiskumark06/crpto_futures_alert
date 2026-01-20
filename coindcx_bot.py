@@ -298,6 +298,11 @@ async def main():
             break
         except Exception as e:
             print(f"❌ Error: {e}")
-
+    
 if __name__ == "__main__":
-    asyncio.run(main())
+    for symbol in COINS:
+        analysis = analyze_symbol(symbol)
+        if analysis['strong_bull'] or analysis['strong_bear']:
+            message = format_telegram_message(analysis)
+            asyncio.run(send_telegram_message(message))  
+        print(f"📊 {symbol}: {analysis}")
