@@ -250,10 +250,10 @@ async def send_telegram_message(message):
    try:
         await bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message, parse_mode='HTML')
         print(f"✅ Telegram sent: {datetime.now()}")
-        asyncio.run(send_telegram_message("TEST"))
        
    except Exception as e:
         print(f"❌ Telegram error: {e}")
+await send_telegram_message("HELLO")
 
 def format_telegram_message(analysis):
     emoji = "🟢" if analysis['strong_bull'] else "🔴" if analysis['strong_bear'] else "⚪"
