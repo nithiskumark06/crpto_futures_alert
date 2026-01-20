@@ -253,7 +253,7 @@ async def send_telegram_message(message):
        
    except Exception as e:
         print(f"❌ Telegram error: {e}")
-await send_telegram_message("HELLO")
+asyncio.run(send_telegram_message("HELLO")))
 
 def format_telegram_message(analysis):
     emoji = "🟢" if analysis['strong_bull'] else "🔴" if analysis['strong_bear'] else "⚪"
