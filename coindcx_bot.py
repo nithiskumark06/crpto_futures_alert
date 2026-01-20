@@ -253,7 +253,6 @@ async def send_telegram_message(message):
        
    except Exception as e:
         print(f"❌ Telegram error: {e}")
-asyncio.run(send_telegram_message("HELLO")))
 
 def format_telegram_message(analysis):
     emoji = "🟢" if analysis['strong_bull'] else "🔴" if analysis['strong_bear'] else "⚪"
@@ -301,13 +300,4 @@ async def main():
             print(f"❌ Error: {e}")
 
 if __name__ == "__main__":
-    for symbol in COINS:
-        analysis = analyze_symbol(symbol)
-        if not analysis:
-            print(f"⚠ Skipping {symbol}: analysis failed")
-            continue
-        
-        if analysis.get('strong_bull') or analysis.get('strong_bear'):
-            message = format_telegram_message(analysis)
-            asyncio.run(send_telegram_message(message))  # Single message
-            print(f"📊 {symbol}: {analysis}")
+    asyncio.run(main())
