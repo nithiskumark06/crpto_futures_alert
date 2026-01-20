@@ -246,13 +246,21 @@ def analyze_symbol(symbol):
         'strong_bull': False,
         'strong_bear': False}
 
-async def send_telegram_message(message):
+def send_telegram_message(message):
    try:
-        await bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message, parse_mode='HTML')
-        print(f"✅ Telegram sent: {datetime.now()}")
+        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+        payload = {
+            "chat_id": TELEGRAM_CHAT_ID,
+            "text": message,
+            "parse_mode": "HTML"
+        }
+        r = requests.post(url, json=payload, timeout=10)
+        print("Telegram status:", r.status_code)
        
    except Exception as e:
         print(f"❌ Telegram error: {e}")
+
+send_telegram_message("HELLO")
 
 def format_telegram_message(analysis):
     emoji = "🟢" if analysis['strong_bull'] else "🔴" if analysis['strong_bear'] else "⚪"
@@ -289,9 +297,10 @@ async def main():
                 
                 if analysis['strong_bull'] or analysis['strong_bear']:
                     message = format_telegram_message(analysis)
-                    await send_telegram_message(message)
-                
-                print(f"📊 {symbol}: Bull={analysis['bull_score']}/6, Bear={analysis['bear_score']}/6, Regime={analysis['regime']}")
+                    send_telegram_message(message)
+                    print(f"📊 {symbol}: Bull={analysis['bull_score']}/6, Bear={analysis['bear_score']}/6, Regime={analysis['regime']}")
+                else:
+                print(f"⏳ No signal for {symbol}")
             
         except KeyboardInterrupt:
             print("\n🛑 Bot stopped")
@@ -300,9 +309,11 @@ async def main():
             print(f"❌ Error: {e}")
     
 if __name__ == "__main__":
+    asyncio.run(
+    bot.send_message(chat_id=TELEGRAM_CHAT_ID, text="✅ GitHub Action started successfully"))
     for symbol in COINS:
         analysis = analyze_symbol(symbol)
         if analysis['strong_bull'] or analysis['strong_bear']:
             message = format_telegram_message(analysis)
-            asyncio.run(send_telegram_message(message))  
+            send_telegram_message(message)  
         print(f"📊 {symbol}: {analysis}")
